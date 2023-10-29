@@ -10,6 +10,9 @@ table = CSV.table(file, col_sep: "\t")
 file.close
 
 # Imprime el nombre de la primera persona
-puts table
-
+(0..table.length-1).each do |row|
+    if table[:seed_stock][row] == "B3334"
+        puts table[:mutant_gene_id][row]
+    end
+end
 

@@ -1,12 +1,14 @@
 require "./seed_stock"
+require "./gene"
 require "csv"
 
 class SeedStockDatabase
-    @@stocks = []
     attr_accessor :name
 
-    def initialize (name: "database1")
+    def initialize (name: "database1", gene_information_file: false)
         @name = name
+        @gene_information_file = gene_information_file
+        @stocks = []
     end
 
     def load_from_file(seed_stock_data: false)
@@ -18,13 +20,13 @@ class SeedStockDatabase
         file.close
 
         (0..table.length-1).each do |row|
-            @@stocks << SeedStock.new(stock: table[:seed_stock][row], gene_id: table[:mutant_gene_id][row], 
+            @stocks << SeedStock.new(stock: table[:seed_stock][row], gene: Gene.new(gene_id: table[:mutant_gene_id][row], gene_information_file: @gene_information_file), 
             date: table[:last_planted][row], storage: table[:storage][row], grams_remaining: table[:grams_remaining][row])
         end
     end
 
     def list
-        return @@stocks
+        return @stocks
     end
 
     def get_seed_stock(stock_name)
@@ -50,7 +52,7 @@ class SeedStockDatabase
                     puts "WARNING: we have run out of Seed Stock #{instance.stock}"
                 end
             end
-            
+
         else x = 0
             self.list.each do |instance|
                 if instance.stock == stock_name
@@ -70,16 +72,10 @@ class SeedStockDatabase
     end
 end
 
-db = SeedStockDatabase.new(name: "My database")
+db = SeedStockDatabase.new(name: "My database", gene_information_file: "gene_information.tsv")
 
 db.load_from_file(seed_stock_data: "seed_stock_data.tsv")
 
 db.list.each do |instance|
-    puts instance.grams_remaining
-end
-
-db.plant_seeds(stock_name = "all", grams = 7)
-puts
-db.list.each do |instance|
-    puts instance.grams_remaining
+    puts instance.gene.gene_name
 end

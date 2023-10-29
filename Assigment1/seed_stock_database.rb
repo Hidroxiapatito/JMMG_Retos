@@ -17,7 +17,7 @@ class SeedStockDatabase
         table = CSV.table(file, col_sep: "\t")
         file.close
 
-        (0..table.length).each do |row|
+        (0..table.length-1).each do |row|
             @@stocks << SeedStock.new(stock: table[:seed_stock][row], gene_id: table[:mutant_gene_id][row], 
             date: table[:last_planted][row], storage: table[:storage][row], grams_remaining: table[:grams_remaining][row])
         end
@@ -26,12 +26,60 @@ class SeedStockDatabase
     def list
         return @@stocks
     end
+
+    def get_seed_stock(stock_name)
+        self.list.each do |instance|
+            if instance.stock == stock_name
+                return instance
+            else "Seed stock not found"
+            end
+        end
+    end
+
+    def plant_seeds(stock_name = "all", grams)
+        unless grams
+            puts "wrong usage of 'plant seeds'. Proper usage: ('stock name' or 'all'), grams"
+        end
+
+        if stock_name == "all"
+            self.list.each do |instance|
+                instance.grams_remaining -= grams
+
+                if instance.grams_remaining <= 0
+                    instance.grams_remaining = 0
+                    puts "WARNING: we have run out of Seed Stock #{instance.stock}"
+                end
+            end
+            
+        else x = 0
+            self.list.each do |instance|
+                if instance.stock == stock_name
+                    instance.grams_remaining -= grams
+                    x = 1
+
+                    if instance.grams_remaining <= 0
+                        instance.grams_remaining = 0
+                        puts "WARNING: we have run out of Seed Stock #{instance.stock}"
+                    end
+                end
+            end
+            if x == 0
+                puts "Seed stock not found"
+            end
+        end
+    end
 end
 
 db = SeedStockDatabase.new(name: "My database")
 
 db.load_from_file(seed_stock_data: "seed_stock_data.tsv")
 
-puts db.list[1].stock
+db.list.each do |instance|
+    puts instance.grams_remaining
+end
 
-        
+db.plant_seeds(stock_name = "all", grams = 7)
+puts
+db.list.each do |instance|
+    puts instance.grams_remaining
+end

@@ -7,13 +7,12 @@ unless filenames[0] && filenames[1] && filenames[2] && filenames[3]
 gene_information.tsv  seed_stock_data.tsv  cross_data.tsv  new_stock_file_name.tsv"
 end
 
-db = SeedStockDatabase.new(gene_information_file: filenames[0]) #Additionally, a name can be provided
-
-puts db.name
+db = SeedStockDatabase.new(gene_information_file: filenames[0]) #Additionally, a name for the database can be provided
+#If no information file for the genes is provided, it must be provided later before loading the seed_stock_data
 
 db.load_from_file(filenames[1])
 
-db.plant_seeds("all", 7)
+db.plant_seeds("all", 7) #Additionally, an individual stock can be selected, and different number of grams aswell
 
 db.get_crosses(filenames[2])
 

@@ -13,7 +13,7 @@ class SeedStockDatabase
         @crosses = []
     end
 
-    def load_from_file(seed_stock_data)
+    def load_from_file(seed_stock_data = false)
         unless seed_stock_data
             abort ".tsv file must be provided"
         end
@@ -22,7 +22,8 @@ class SeedStockDatabase
         file.close
 
         unless @gene_information_file
-            abort ".tsv file with information about the genes must be provided: self.gene_information_file: 'your_file.tsv'"
+            abort ".tsv file with information about the genes must be provided before \
+loading seed stock data: self.gene_information_file = 'your_file.tsv'"
         end
 
         (0..table.length-1).each do |row|
@@ -76,7 +77,7 @@ class SeedStockDatabase
         end
     end
 
-    def get_crosses(cross_information_file)
+    def get_crosses(cross_information_file = false)
         unless cross_information_file
             abort ".tsv file with information about crosses must be provided"
         end
@@ -117,5 +118,6 @@ class SeedStockDatabase
         self.stocks.each do |stock|
             out_file.puts "#{stock.stock}\t#{stock.gene.gene_id}\t#{stock.date}\t#{stock.storage}\t#{stock.grams_remaining}"
         end
+        out_file.close
     end
 end

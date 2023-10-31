@@ -6,7 +6,7 @@ require "csv"
 class SeedStockDatabase
     attr_accessor :name, :stocks, :gene_information_file, :crosses
 
-    def initialize (name = "database1", gene_information_file = false)
+    def initialize (name: "database1", gene_information_file: false)
         @name = name
         @gene_information_file = gene_information_file
         @stocks = []
@@ -21,8 +21,8 @@ class SeedStockDatabase
         table = CSV.table(file, col_sep: "\t")
         file.close
 
-        unless gene_information_file
-            abort ".tsv file with information about the genes must be provided: self.gene_information_file = 'your_file.tsv'"
+        unless @gene_information_file
+            abort ".tsv file with information about the genes must be provided: self.gene_information_file: 'your_file.tsv'"
         end
 
         (0..table.length-1).each do |row|
@@ -119,17 +119,3 @@ class SeedStockDatabase
         end
     end
 end
-
-#db = SeedStockDatabase.new(name: "My database", gene_information_file: "gene_information.tsv")
-
-db = SeedStockDatabase.new
-
-db.gene_information_file = "gene_information.tsv"
-
-db.load_from_file(seed_stock_data = "seed_stock_data.tsv")
-
-puts db.name
-
-db.get_crosses("cross_data.tsv")
-
-db.write_database

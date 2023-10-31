@@ -5,7 +5,7 @@ class Gene
 
     def initialize(gene_id:, gene_information_file: false)
         unless gene_information_file
-            abort ".tsv file with information about the genes must be provided"
+            abort ".tsv file with information about the genes must be provided gene_id:, gene_information_file: 'your file'"
         end
 
         file = File.open(gene_information_file)

@@ -3,9 +3,10 @@ require "csv"
 class Gene
     attr_accessor :gene_id, :gene_name, :mutant_phenotype, :linked_to
 
-    def initialize(gene_id:, gene_information_file: false)
-        unless gene_information_file
-            abort ".tsv file with information about the genes must be provided gene_id:, gene_information_file: 'your file'"
+    def initialize(gene_id = false, gene_information_file = false)
+        unless gene_information_file && gene_id
+            abort "gene_id and .tsv file with information about the genes must be provided \
+gene_id:, gene_information_file: 'your file'"
         end
 
         file = File.open(gene_information_file)

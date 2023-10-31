@@ -49,6 +49,7 @@ class SeedStockDatabase
         if stock_name == "all"
             self.stocks.each do |instance|
                 instance.grams_remaining -= grams
+                instance.date = Time.now.strftime("%d/%m/%Y")
 
                 if instance.grams_remaining <= 0
                     instance.grams_remaining = 0
@@ -60,6 +61,7 @@ class SeedStockDatabase
             self.stocks.each do |instance|
                 if instance.stock == stock_name
                     instance.grams_remaining -= grams
+                    instance.date = Time.now.strftime("%d/%m/%Y")
                     x = 1
 
                     if instance.grams_remaining <= 0
@@ -89,10 +91,33 @@ class SeedStockDatabase
         end
 
         self.crosses.each do |cross|
-            puts cross.p1
+            observed = [cross.fwt, cross.fp1, cross.fp2, cross.fp1p2]
+            total = observed.sum.to_f
+            expected = [total * 9/16, total * 3/16, total * 3/16, total * 1/16]
+            equ = []
+
+            (0..3).each do |i|
+                equ << (observed[i] - expected[i])**2 / expected[i]
+            end
+
+            result = equ.sum
+
+            if result >= 7.815 #p-value >= 0.05 for 3 degrees of freedom
+                self.get_seed_stock(cross.p1).gene.linked_to = self.get_seed_stock(cross.p2).gene.gene_name
+                self.get_seed_stock(cross.p2).gene.linked_to = self.get_seed_stock(cross.p1).gene.gene_name
+                puts "Recording: #{self.get_seed_stock(cross.p1).gene.gene_name} is genetically linked to \
+#{self.get_seed_stock(cross.p2).gene.gene_name} with chisquare score #{result}"
+            end
         end
     end
 
+    def write_database(new_database_name = "new_stock_file.tsv")
+        out_file = File.new(new_database_name, "w")
+        out_file.puts "Seed_Stock	Mutant_Gene_ID	Last_Planted	Storage	Grams_Remaining"
+        self.stocks.each do |stock|
+            out_file.puts "#{stock.stock}\t#{stock.gene.gene_id}\t#{stock.date}\t#{stock.storage}\t#{stock.grams_remaining}"
+        end
+    end
 end
 
 #db = SeedStockDatabase.new(name: "My database", gene_information_file: "gene_information.tsv")
@@ -103,10 +128,8 @@ db.gene_information_file = "gene_information.tsv"
 
 db.load_from_file(seed_stock_data = "seed_stock_data.tsv")
 
-db.stocks.each do |instance|
-    puts instance.gene.gene_name
-end
-
 puts db.name
 
 db.get_crosses("cross_data.tsv")
+
+db.write_database

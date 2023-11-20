@@ -35,7 +35,6 @@ def get_interactions_FromGene_IntoHash(geneid, hash)
             #     puts data[0]["TAIR"] #[/A[Tt]\d[Gg]\d\d\d\d\d/, 0]
             # end
 
-            # Hacer caso de que no esté el locus id en los alias
             x = 0
             [a, b].each do |gen|
                 if x == 0 && (gen != geneid || a == b) && (intType == "MI:0407" || intType == "MI:0915") && gen != nil
@@ -56,34 +55,10 @@ def get_interactions_FromGene_IntoHash(geneid, hash)
 end
 
 
+def get_interactions_FromList_IntoHash_WithDepth(list, hash, depth)
 
-# def get_interactions_FromGene_IntoHash_WithDepth(gene, hash, depth)
-
-#     hash = get_interactions_FromGene_IntoHash(gene, hash)
-#     (0..depth-1).each do |i|
-#         hash.each do |gen, int|
-
-#             if int.kind_of?(Array)
-#                 int.each do |name|
-#                     unless hash.key?(name)
-#                         hash = get_interactions_FromGene_IntoHash(name, hash)
-#                     end
-#                 end
-#             end
-#         end
-#     end
-
-
-#     return hash
-# end
-
-def get_interactions_FromFile_IntoHash_WithDepth(file, hash, depth)
-    n = 0
-    lines = File.foreach(file).count
-    IO.readlines(file)[2..3].each do |geneid|
-        n += 1
-        puts "#{n}/#{lines}"
-        geneid.strip!.downcase!.capitalize!
+    list.each do |geneid|
+        puts "#{list.index(geneid)}/#{list.length}"
     
         hash = get_interactions_FromGene_IntoHash(geneid, hash)
 

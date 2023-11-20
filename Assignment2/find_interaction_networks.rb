@@ -1,11 +1,8 @@
 require './helper'
 
-IO.readlines("ArabidopsisSubNetwork_GeneList.txt")[2..4].each do |geneid|
+gene_interactions = Hash.new
 
-    puts geneid.strip!
+file = "ArabidopsisSubNetwork_GeneList.txt"
 
-    print(get_interactions(geneid)[0], get_interactions(geneid)[1])
 
-    puts
-
-end
+puts get_interactions_FromFile_IntoHash_WithDepth(file, gene_interactions, 1)

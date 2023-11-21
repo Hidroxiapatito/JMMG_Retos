@@ -58,7 +58,7 @@ end
 def get_interactions_FromList_IntoHash_WithDepth(list, hash, depth)
 
     list.each do |geneid|
-        puts "#{list.index(geneid)}/#{list.length}"
+        puts "#{list.index(geneid)+1}/#{list.length}"
     
         hash = get_interactions_FromGene_IntoHash(geneid, hash)
 

@@ -1,7 +1,5 @@
-network = ["patata", "patito", "pito"]
+#network = {"At1g21400"=>"No interactions", "At5g19120"=>["At3g46090"]}
 
-geneid = "pitote"
+network = [[1,2,3], [4,5,6]]
 
-network << geneid unless network.include?(geneid) 
-
-puts network
+puts network.include?(nil)

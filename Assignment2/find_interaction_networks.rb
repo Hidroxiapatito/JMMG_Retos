@@ -9,11 +9,11 @@ end
 
 gene_interactions = Hash.new
 
-depth = 1   #what it depth?
+depth = 1   #what depth it achieves?
 
-hassh = get_interactions_FromList_IntoHash_WithDepth(subNetwork_GeneList, gene_interactions, depth)
+gene_interactions = get_interactions_FromList_IntoHash_WithDepth(subNetwork_GeneList, gene_interactions, depth)
 
-File.open("./hash", 'w') { |file| file.write(hassh.to_s) }
+File.open("./hash_2", 'w') { |file| file.write(gene_interactions.to_s) }
 
 networks = []
 nonInteracting = []
@@ -46,9 +46,8 @@ subNetwork_GeneList.each do |geneid|   #didn't have time to make this recursive
     end
 end
 
-print "networks: ", networks
-puts
-print "Non interacting ", nonInteracting
-puts
+File.open("./networks.txt", 'w') { |file| file.write(networks.to_s) }
+
+File.open("./nonInteracting.txt", 'w') { |file| file.write(nonInteracting.to_s) }
 
 #We need to merge the networks

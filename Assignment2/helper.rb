@@ -45,7 +45,7 @@ def get_interactions_FromGene_IntoHash(geneid, hash)
         end
     end
 
-    unless empty
+    unless empty || interactions == []
         hash[geneid] = interactions
     else 
         hash[geneid] = "No interactions"
@@ -56,13 +56,14 @@ end
 
 
 def get_interactions_FromList_IntoHash_WithDepth(list, hash, depth)
-
+    start = Time.now
+    names = []
     list.each do |geneid|
+        start_gene = Time.now
         puts "#{list.index(geneid)+1}/#{list.length}"
     
         hash = get_interactions_FromGene_IntoHash(geneid, hash)
 
-        names = []
         (0..depth-1).each do
 
             hash.keys.each do |gen|
@@ -76,6 +77,12 @@ def get_interactions_FromList_IntoHash_WithDepth(list, hash, depth)
             end
             names << hash.keys
         end
+        finish_gene = Time.now
+        print finish_gene - start_gene, " seconds"
+        puts
     end
+    finish = Time.now
+    print "Total time elapsed: ", (finish - start)/60, " minutes"
+    puts
     return hash
 end

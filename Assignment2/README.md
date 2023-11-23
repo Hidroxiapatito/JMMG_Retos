@@ -1,14 +1,19 @@
 NOT YET FINNISHED
+
     merging interactions doesen't seem to work well. Genes outside gene list are not deleted.
     Didn't have enough time to generate output file.
-    Networks output is available
+    Networks output is available.
+
 How to run:
 
 $ ruby find_interaction_networks.rb 
 
 Running times:
+
 Depth 1: 15 - 30 seconds
+
 Depth 2: 58 - 125 seconds
+
 Depth 3: 6 - 7 minutes
 
 Annotations take well over an hour.

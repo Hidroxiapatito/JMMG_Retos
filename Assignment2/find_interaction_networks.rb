@@ -8,10 +8,11 @@ IO.readlines(file).each do |geneid|
     subNetwork_GeneList << geneid.strip.downcase.capitalize
 end
 
+$stdout.reopen("result_output.txt", "w")
 puts "Building interactions..."
 puts 
 gene_interactions = Hash.new
-depth = 2 # DEFINE DEPTH OF INTERACTION SEARCH
+depth = 3 # DEFINE DEPTH OF INTERACTION SEARCH
 gene_interactions = get_interactions_FromList_IntoHash_WithDepth(subNetwork_GeneList, gene_interactions, depth)
 File.open("./hash.txt", 'w') { |file| file.write(gene_interactions.to_s) }
 
@@ -34,7 +35,7 @@ merged_networks.each do |network|
     annot = []
     network.each do |gene|
         annot << Annotations.new("GO BP terms", Annotations.get_GO(gene))
-        annot << Annotations.new("KEGG pathay", Annotations.get_KEGG(gene))
+        annot << Annotations.new("KEGG pathays", Annotations.get_KEGG(gene))
     end
     final_networks << InteractionNetwork.new(network, annot)
 end
@@ -48,12 +49,17 @@ puts "Networks genes and annotations:"
 final_networks.each_with_index do |net, i|
     print "Network: ", i
     puts
+    puts
     puts "Genes:", net.genes
+    puts
     puts "Annotations:"
-    net.annotations.each do |an|
+    net.annotations.each_with_index do |an, i|
+        print "gene: ", i
+        puts
         puts an.name
         puts an.text
+        puts
     end
+    puts
+    puts "##########################"
 end
-
-$stdout.reopen("result_output.txt", "w")

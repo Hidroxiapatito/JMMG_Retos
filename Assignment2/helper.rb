@@ -24,7 +24,8 @@ def get_interactions_FromGene_IntoHash(geneid, hash)
             b = line.split("\t")[5][/A[Tt]\d[Gg]\d\d\d\d\d/, 0]
             intType = line.split("\t")[11][/(M[^"]*)/, 0]
 
-        # NOT ALL PROTEINS HAVE LOCUS NAMES, IF ABOVE CODE DOESNT CAPTURE THE LOCUS, IT GETS DISCARDED
+        # NOT ALL PROTEINS HAVE LOCUS NAMES AS ALIASES, IF ABOVE CODE DOESNT CAPTURE THE LOCUS, PROTEIN GETS DISCARDED
+            #BELOW CODE CAN'T ALLWAYS GET LOCUS NAME WHEN CODE ABOVE FAILS, HENCE THAT'S WHY I DON'T USE IT
             # if a == nil || b == nil
             #     a = line.split("\t")[0][/([A-Z][^\t]*)/, 0]
             #     b = line.split("\t")[1][/([A-Z][^\t]*)/, 0]
@@ -53,42 +54,6 @@ def get_interactions_FromGene_IntoHash(geneid, hash)
     
     return hash
 end
-
-
-# def get_interactions_FromList_IntoHash_WithDepth(list, hash, depth)
-#     start = Time.now
-#     names = []
-#     list.each do |geneid|
-#         start_gene = Time.now
-#         puts "#{list.index(geneid)+1}/#{list.length}"
-    
-#         hash = get_interactions_FromGene_IntoHash(geneid, hash)
-
-#         (0..depth-1).each do
-#             hash.keys.each do |gen|
-    
-#                 if !names.include?(gen) && hash[gen].kind_of?(Array)
-#                     hash[gen].each do |name|
-
-#                         unless hash.key?(name)
-#                             hash = get_interactions_FromGene_IntoHash(name, hash)
-#                         end
-#                     end
-#                 end
-#             end
-#         end
-#         hash.keys.each do |name|
-#                names << name
-#         end
-#         finish_gene = Time.now
-#         print finish_gene - start_gene, " seconds"
-#         puts
-#     end
-#     finish = Time.now
-#     print "Total time elapsed: ", (finish - start)/60, " minutes"
-#     puts
-#     return hash
-# end
 
 def get_interactions_FromList_IntoHash_WithDepth(list, hash, depth)
     depth -= 1
@@ -123,4 +88,22 @@ def get_interactions_FromList_IntoHash_WithDepth(list, hash, depth)
     print "Total time elapsed: ", (finish - start)/60, " minutes"
     puts
     return hash
+end
+
+# SOURCE: https://stackoverflow.com/questions/1673793/merging-array-items-in-ruby
+def reduce(array)
+    h = Hash.new {|h,k| h[k] = []}
+    array.each_with_index do |x, i| 
+      x.each do |j|
+        h[j] << i
+        if h[j].size > 1
+          # merge the two sub arrays
+          array[h[j][0]].replace((array[h[j][0]] | array[h[j][1]]).sort)
+          array.delete_at(h[j][1])
+          return reduce(array)
+          # recurse until nothing needs to be merged
+        end
+      end
+    end
+    array
 end

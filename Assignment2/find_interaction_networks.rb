@@ -9,7 +9,7 @@ end
 
 gene_interactions = Hash.new
 
-depth = 1   #what depth it achieves?
+depth = 3
 
 gene_interactions = get_interactions_FromList_IntoHash_WithDepth(subNetwork_GeneList, gene_interactions, depth)
 

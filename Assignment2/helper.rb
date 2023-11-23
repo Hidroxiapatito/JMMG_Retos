@@ -38,7 +38,7 @@ def get_interactions_FromGene_IntoHash(geneid, hash)
             x = 0
             [a, b].each do |gen|
                 if x == 0 && (gen != geneid || a == b) && (intType == "MI:0407" || intType == "MI:0915") && gen != nil
-                    interactions << gen
+                    interactions << gen.downcase.capitalize
                     x = 1
                 end
             end
@@ -55,34 +55,71 @@ def get_interactions_FromGene_IntoHash(geneid, hash)
 end
 
 
-def get_interactions_FromList_IntoHash_WithDepth(list, hash, depth)
-    start = Time.now
-    names = []
-    list.each do |geneid|
-        start_gene = Time.now
-        puts "#{list.index(geneid)+1}/#{list.length}"
+# def get_interactions_FromList_IntoHash_WithDepth(list, hash, depth)
+#     start = Time.now
+#     names = []
+#     list.each do |geneid|
+#         start_gene = Time.now
+#         puts "#{list.index(geneid)+1}/#{list.length}"
     
+#         hash = get_interactions_FromGene_IntoHash(geneid, hash)
+
+#         (0..depth-1).each do
+#             hash.keys.each do |gen|
+    
+#                 if !names.include?(gen) && hash[gen].kind_of?(Array)
+#                     hash[gen].each do |name|
+
+#                         unless hash.key?(name)
+#                             hash = get_interactions_FromGene_IntoHash(name, hash)
+#                         end
+#                     end
+#                 end
+#             end
+#         end
+#         hash.keys.each do |name|
+#                names << name
+#         end
+#         finish_gene = Time.now
+#         print finish_gene - start_gene, " seconds"
+#         puts
+#     end
+#     finish = Time.now
+#     print "Total time elapsed: ", (finish - start)/60, " minutes"
+#     puts
+#     return hash
+# end
+
+def get_interactions_FromList_IntoHash_WithDepth(list, hash, depth)
+    depth -= 1
+    start = Time.now
+
+    list.each do |geneid|
         hash = get_interactions_FromGene_IntoHash(geneid, hash)
+    end
+    puts "Depth 1"
+    d1 = Time.now
+    print d1 - start, " seconds"
+    puts
 
-        (0..depth-1).each do
+    (0..depth-1).each do |d|
+        hash.keys.each do |gene|
 
-            hash.keys.each do |gen|
-                if !names.include?(gen) && hash[gen].kind_of?(Array)
-                    hash[gen].each do |name|
-                        unless hash.key?(name)
-                            hash = get_interactions_FromGene_IntoHash(name, hash)
-                        end
+            if hash[gene].kind_of?(Array)
+                hash[gene].each do |name|
+
+                    unless hash.key?(name)
+                        hash = get_interactions_FromGene_IntoHash(name, hash)
                     end
                 end
             end
-            names << hash.keys
         end
-        finish_gene = Time.now
-        print finish_gene - start_gene, " seconds"
+        puts "Depth #{d+2}"
+        d2 = Time.now
+        print d2 - start, " seconds"
         puts
     end
     finish = Time.now
     print "Total time elapsed: ", (finish - start)/60, " minutes"
-    puts
     return hash
 end

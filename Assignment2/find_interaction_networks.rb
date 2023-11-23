@@ -13,7 +13,7 @@ depth = 3
 
 gene_interactions = get_interactions_FromList_IntoHash_WithDepth(subNetwork_GeneList, gene_interactions, depth)
 
-File.open("./hash_2", 'w') { |file| file.write(gene_interactions.to_s) }
+File.open("./hash", 'w') { |file| file.write(gene_interactions.to_s) }
 
 networks = []
 nonInteracting = []

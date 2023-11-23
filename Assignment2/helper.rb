@@ -121,5 +121,6 @@ def get_interactions_FromList_IntoHash_WithDepth(list, hash, depth)
     end
     finish = Time.now
     print "Total time elapsed: ", (finish - start)/60, " minutes"
+    puts
     return hash
 end

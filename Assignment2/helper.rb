@@ -20,8 +20,8 @@ def get_interactions_FromGene_IntoHash(geneid, hash)
     if not empty
         response.body.split("\n").each do |line|
 
-            a = line.split("\t")[4][/A[Tt]\d[Gg]\d\d\d\d\d/, 0].downcase.capitalize
-            b = line.split("\t")[5][/A[Tt]\d[Gg]\d\d\d\d\d/, 0].downcase.capitalize
+            a = line.split("\t")[4][/A[Tt]\d[Gg]\d\d\d\d\d/, 0]
+            b = line.split("\t")[5][/A[Tt]\d[Gg]\d\d\d\d\d/, 0]
             intType = line.split("\t")[11][/(M[^"]*)/, 0]
 
         # NOT ALL PROTEINS HAVE LOCUS NAMES AS ALIASES, IF ABOVE CODE DOESNT CAPTURE THE LOCUS, PROTEIN GETS DISCARDED
@@ -36,6 +36,11 @@ def get_interactions_FromGene_IntoHash(geneid, hash)
             #     puts data[0]["TAIR"] #[/A[Tt]\d[Gg]\d\d\d\d\d/, 0]
             # end
 
+            [a, b].each do |x|
+                unless x == nil
+                    x.downcase!.capitalize!
+                end
+            end
             x = 0
             [a, b].each do |gen|
                 if x == 0 && (gen != geneid || a == b) && (intType == "MI:0407" || intType == "MI:0915") && gen != nil
@@ -54,6 +59,8 @@ def get_interactions_FromGene_IntoHash(geneid, hash)
     
     return hash
 end
+
+
 
 def get_interactions_FromList_IntoHash_WithDepth(list, hash, depth)
     depth -= 1
@@ -106,4 +113,46 @@ def reduce(array)
       end
     end
     array
+end
+
+
+def extracting_interactions(hash, gene_list) 
+
+    interactions = []
+    nonInteracting = []
+
+    hash.keys.each do |gene|
+        if hash[gene].kind_of?(Array)
+
+            network = []
+            network << gene
+            hash[gene].each do |interactor|
+                network << interactor
+            end
+            interactions << network
+        else
+            nonInteracting << gene
+        end
+    end
+
+    merged_interactions = reduce(interactions)
+
+    merged_interactions.each do |network|
+        if (network & gene_list).any?
+            network.each do |gen|
+                unless gene_list.include?(gen)
+                    network.delete(gen)
+                end
+            end
+        else
+            merged_interactions.delete(network)
+        end
+    end
+
+    nonInteracting.each do |gen|
+        unless gene_list.include?(gen)
+            nonInteracting.delete(gen)
+        end
+    end
+    return [interactions, nonInteracting]
 end

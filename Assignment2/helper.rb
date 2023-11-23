@@ -1,5 +1,5 @@
 require 'rest-client'
-require 'json'
+#require 'json'
 
 def get_interactions_FromGene_IntoHash(geneid, hash)
 
@@ -20,8 +20,8 @@ def get_interactions_FromGene_IntoHash(geneid, hash)
     if not empty
         response.body.split("\n").each do |line|
 
-            a = line.split("\t")[4][/A[Tt]\d[Gg]\d\d\d\d\d/, 0]
-            b = line.split("\t")[5][/A[Tt]\d[Gg]\d\d\d\d\d/, 0]
+            a = line.split("\t")[4][/A[Tt]\d[Gg]\d\d\d\d\d/, 0].downcase.capitalize
+            b = line.split("\t")[5][/A[Tt]\d[Gg]\d\d\d\d\d/, 0].downcase.capitalize
             intType = line.split("\t")[11][/(M[^"]*)/, 0]
 
         # NOT ALL PROTEINS HAVE LOCUS NAMES AS ALIASES, IF ABOVE CODE DOESNT CAPTURE THE LOCUS, PROTEIN GETS DISCARDED
@@ -39,7 +39,7 @@ def get_interactions_FromGene_IntoHash(geneid, hash)
             x = 0
             [a, b].each do |gen|
                 if x == 0 && (gen != geneid || a == b) && (intType == "MI:0407" || intType == "MI:0915") && gen != nil
-                    interactions << gen.downcase.capitalize
+                    interactions << gen
                     x = 1
                 end
             end

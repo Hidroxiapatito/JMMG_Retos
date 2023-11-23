@@ -1,5 +1,5 @@
 require 'rest-client'
-#require 'json'
+require 'json'
 
 def get_interactions_FromGene_IntoHash(geneid, hash)
 
@@ -99,7 +99,8 @@ end
 
 # SOURCE: https://stackoverflow.com/questions/1673793/merging-array-items-in-ruby
 # Modified
-def reduce(array)
+def reduce(input)
+    array = input.clone
     array.each do |set|
         set.uniq!
     end
@@ -140,9 +141,9 @@ def extracting_interactions(hash, gene_list)
         end
     end
 
-    merged_interactions = reduce(interactions)
+    interactions_merged = reduce(interactions)
 
-    merged_interactions.each do |network|
+    interactions_merged.each do |network|
         if (network & gene_list).any?
             network.each do |gen|
                 unless gene_list.include?(gen)
@@ -150,7 +151,7 @@ def extracting_interactions(hash, gene_list)
                 end
             end
         else
-            merged_interactions.delete(network)
+            interactions_merged.delete(network)
         end
     end
 
@@ -159,5 +160,5 @@ def extracting_interactions(hash, gene_list)
             nonInteracting.delete(gen)
         end
     end
-    return [interactions, nonInteracting]
+    return [interactions_merged, nonInteracting]
 end

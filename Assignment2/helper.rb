@@ -98,7 +98,12 @@ def get_interactions_FromList_IntoHash_WithDepth(list, hash, depth)
 end
 
 # SOURCE: https://stackoverflow.com/questions/1673793/merging-array-items-in-ruby
+# Modified
 def reduce(array)
+    array.each do |set|
+        set.uniq!
+    end
+
     h = Hash.new {|h,k| h[k] = []}
     array.each_with_index do |x, i| 
       x.each do |j|

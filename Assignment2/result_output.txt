@@ -1,0 +1,9 @@
+Building interactions...
+
+Depth 1
+17.267083653 seconds
+Depth 2
+66.139558331 seconds
+Depth 3
+415.964298903 seconds
+Total time elapsed: 6.9327384882 minutes

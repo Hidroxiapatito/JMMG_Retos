@@ -4,7 +4,8 @@ I would say that the majority of these co-expressed genes are not known to bind 
 My script concludes that from the list of 168 genes, there are 102 of them that don't interact, that's way more than half of the list. So, at best 66 genes from the list interact with other products, that's less than 40%. And those form 8 separate networks, one of them including the majority of these.
 
 
-## Report is stored in result_output.txt
+## Report is stored in: result_output.txt
+Now that I'm able to get an output (last week I could not get output because of some external network error; see result_error.txt) I see that the indices of the genes when displaing annotations are wrong and the report is not very readable.
 
 
 ## Bugs:
@@ -32,7 +33,7 @@ Depth 2: 58 - 125 seconds
 
 Depth 3: 6 - 7 minutes
 
-Annotations take well over an hour.
+Annotations take well over an hour and 20 mins.
 
 ## References
 One function from stackoverflow was used. Referenced in code.

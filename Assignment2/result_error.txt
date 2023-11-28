@@ -1,0 +1,57 @@
+/home/osboxes/.rvm/gems/ruby-3.0.0/gems/json-2.6.3/lib/json/common.rb:216:in `parse': unexpected token at '<?php (JSON::ParserError)
+header("HTTP/1.0 503 Service Unavailable");
+?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang="ja">
+<head>
+<title>一時的にページが表示できません。</title>
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW, NOARCHIVE">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<body>
+
+<img src="dbcls-logo.png" alt="DBCLS: Database Center for Life Science" width="200" height="88" style="border: 0px;">
+
+<br><br>
+
+<h2>一時的にページが表示できません。 </h2>
+<p>
+サーバーに一時的な障害が生じています。<br>
+しばらく時間をおいてから再度アクセスしてください。<br>
+それでも表示できない場合は、:support[AT]dbcls.rois.ac.jp までご連絡ください。<br>
+（[AT]を @ にかえてください）
+</p><p>
+<p>ご迷惑をおかけして申し訳ございません。</p>
+
+<br>
+
+
+<h2>This page is temporarily unavailable.</h2>
+<p>The server encountered a temporary error. Please try again later.<br>
+If the problem persists, feel free to contact us via support[AT]dbcls.rois.ac.jp.</p>
+
+<p>We apologize for any inconvenience.</p>
+
+<br>
+<p>
+ご質問、お問合せ等は下記のサポート窓口アドレスまでお寄せください。 <br>
+Please refer to the email address below if you need support.
+</p>
+
+<img src="support_mail.png" alt="サポート窓口アドレス:supportアットマークdbclsドットroisドットacドットjp" style="border: 0px;">
+
+</body>
+
+</html>
+
+'
+        from /home/osboxes/.rvm/gems/ruby-3.0.0/gems/json-2.6.3/lib/json/common.rb:216:in `parse'
+        from /home/osboxes/COURSE/JMMG_Retos/Assignment2/annotations.rb:18:in `get_KEGG'
+        from find_interaction_networks.rb:39:in `block (2 levels) in <main>'
+        from find_interaction_networks.rb:37:in `each'
+        from find_interaction_networks.rb:37:in `block in <main>'
+        from find_interaction_networks.rb:35:in `each'
+        from find_interaction_networks.rb:35:in `<main>'

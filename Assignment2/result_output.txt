@@ -4,8 +4,9 @@ Depth 1
 17.691017827 seconds
 Depth 2
 62.056864798 seconds
-Total time elapsed: 1.03428124855 minutes
-Extracting networks...
+Depth 3
+408.902999483 seconds
+Total time elapsed: 6.8150501597333335 minutes
 
 2035 genes form 8 networks.
 102 genes are considered non interacting.

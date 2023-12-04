@@ -1,6 +1,7 @@
 require 'bio'
 
 File.open("./cttctt_repeats_local.gff", 'a') { |file| file.puts('##gff-version	3') }
+File.open("./report.txt", 'a') { |file| file.puts('Genes of the list that don\'t have exons with CTTCTT repeats:') }
 
 file = "ArabidopsisSubNetwork_GeneList.txt"
 subNetwork_GeneList = []
@@ -8,14 +9,14 @@ IO.readlines(file).each do |geneid|
     subNetwork_GeneList << geneid.strip
 end
 
-entries = []
+sequences = Hash.new()
 subNetwork_GeneList.each do |gene_locus|
 
     embl = Bio::EMBL.new(Bio::Fetch::EBI.query("ensemblgenomesgene",gene_locus ,'raw', 'embl'))
-    entries << embl
 
     bioseq = embl.to_biosequence
     sequence =  bioseq.seq
+    sequences[bioseq.primary_accession] = sequence.to_s.upcase
 
     bioseq.features.each do |feature|
 
@@ -47,11 +48,16 @@ subNetwork_GeneList.each do |gene_locus|
     bioseq.features.each do |feature|
         next unless feature.feature == "myrepeat"
         x = 1
-        File.open("./cttctt_repeats_local.gff", 'a') { |file| file.puts("#{embl.accession}\tget_repeats.rb\trepeat_region\t#{eval(feature.position).begin}\t#{eval(feature.position).end}\t.\t#{feature.assoc['strand']}\t.\t.") }
+        File.open("./cttctt_repeats_local.gff", 'a') { |file| file.puts("#{bioseq.primary_accession}\tget_repeats.rb\trepeat_region\t#{eval(feature.position).begin}\t#{eval(feature.position).end}\t.\t#{feature.assoc['strand']}\t.\t.") }
     end
 
-    File.open("./report.txt", 'a') { |file| file.puts('Genes of the list that don\'t have exons with CTTCTT repeats:') }
     if x == 0
         File.open("./report.txt", 'a') { |file| file.puts(gene_locus) }
     end
+end
+
+File.open("./cttctt_repeats_local.gff", 'a') { |file| file.puts('##FASTA') }
+sequences.each do |key, seq|
+    File.open("./cttctt_repeats_local.gff", 'a') { |file| file.puts(">#{key}") }
+    File.open("./cttctt_repeats_local.gff", 'a') { |file| file.puts(seq) }
 end

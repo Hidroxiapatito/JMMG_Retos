@@ -1,3 +1,7 @@
+# This script is a copy of get_repeats.rb 
+# The only changes are that this only generates one output file: ./cttctt_repeats_global.gff
+# and this file utilizes chromosome numbers for the seqname column, and chromosome positions.
+
 require 'bio'
 
 File.open("./cttctt_repeats_global.gff", 'a') { |file| file.puts('##gff-version	3') }
@@ -14,6 +18,8 @@ subNetwork_GeneList.each do |gene_locus|
 
     bioseq = embl.to_biosequence
     sequence =  bioseq.seq
+
+    # Here we get the starting chromosome position, wich is used later when annotating repeat positions
     chr_start = bioseq.primary_accession.split(':')[3].to_i
 
     bioseq.features.each do |feature|

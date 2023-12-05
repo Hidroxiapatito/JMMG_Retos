@@ -63,3 +63,13 @@ sequences.each do |key, seq|
     File.open("./cttctt_repeats_local.gff", 'a') { |file| file.puts(">#{key}") }
     File.open("./cttctt_repeats_local.gff", 'a') { |file| file.puts(seq) }
 end
+
+# source: https://stackoverflow.com/questions/59902863/ruby-how-to-remove-duplicate-lines-from-a-document-text
+require 'set'
+st = IO.foreach("./cttctt_repeats_local.gff", chomp: true).with_object(Set.new) do |line, st|
+  st.add(line)
+end
+
+File.open("./cttctt_repeats_local.gff", 'w') do |f|
+    st.each { |s| f.puts(s) }
+  end

@@ -49,3 +49,13 @@ subNetwork_GeneList.each do |gene_locus|
     end
 
 end
+
+# source: https://stackoverflow.com/questions/59902863/ruby-how-to-remove-duplicate-lines-from-a-document-text
+require 'set'
+st = IO.foreach("./cttctt_repeats_global.gff", chomp: true).with_object(Set.new) do |line, st|
+  st.add(line)
+end
+
+File.open("./cttctt_repeats_global.gff", 'w') do |f|
+    st.each { |s| f.puts(s) }
+  end

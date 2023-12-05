@@ -16,13 +16,13 @@ subNetwork_GeneList.each do |gene_locus|
 
     bioseq = embl.to_biosequence
     sequence =  bioseq.seq
-    sequences[bioseq.primary_accession] = sequence.to_s.upcase
 
     bioseq.features.each do |feature|
 
-        next unless feature.feature == "exon" && /^[0-9]+..[0-9]+/.match?(feature.position)
+        next unless feature.feature == "exon" && (/^[0-9]+..[0-9]+/.match?(feature.position) || /^complement\([0-9]+..[0-9]+\)/.match?(feature.position))
+        position_str = /[0-9]+..[0-9]+/.match(feature.position).to_s
 
-        range = Range.new(eval(feature.position).begin() -1, eval(feature.position).end() -1) 
+        range = Range.new(eval(position_str).begin() -1, eval(position_str).end() -1) 
         positions_plus_exon = sequence[range].enum_for(:scan, /cttctt/).map { Regexp.last_match.begin(0) }
         # source: https://stackoverflow.com/questions/5241653/ruby-regex-match-and-get-positions-of#5241843
 
@@ -53,6 +53,8 @@ subNetwork_GeneList.each do |gene_locus|
 
     if x == 0
         File.open("./report.txt", 'a') { |file| file.puts(gene_locus) }
+    else
+        sequences[bioseq.primary_accession] = sequence.to_s.upcase
     end
 end
 

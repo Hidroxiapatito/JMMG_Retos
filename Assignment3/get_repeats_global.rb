@@ -18,14 +18,15 @@ subNetwork_GeneList.each do |gene_locus|
 
     bioseq.features.each do |feature|
 
-        next unless feature.feature == "exon" && /^[0-9]+..[0-9]+/.match?(feature.position)
+        next unless feature.feature == "exon" && (/^[0-9]+..[0-9]+/.match?(feature.position) || /^complement\([0-9]+..[0-9]+\)/.match?(feature.position))
+        position_str = /[0-9]+..[0-9]+/.match(feature.position).to_s
 
-        range = Range.new(eval(feature.position).begin() -1, eval(feature.position).end() -1) 
+        range = Range.new(eval(position_str).begin() -1, eval(position_str).end() -1) 
         positions_plus_exon = sequence[range].enum_for(:scan, /cttctt/).map { Regexp.last_match.begin(0) }
         # source: https://stackoverflow.com/questions/5241653/ruby-regex-match-and-get-positions-of#5241843
 
         positions_plus_exon.each do |pos|
-            feat = Bio::Feature.new('myrepeat', Range.new(range.begin()+pos+1, range.begin()+pos+6).to_s)
+            feat = Bio::Feature.new('myrepeat', Range.new(range.begin()+pos+chr_start, range.begin()+pos+chr_start+5).to_s)
             feat.append(Bio::Feature::Qualifier.new('repeat_motif', 'CTTCTT'))
             feat.append(Bio::Feature::Qualifier.new('strand', '+'))
             bioseq.features << feat
@@ -34,7 +35,7 @@ subNetwork_GeneList.each do |gene_locus|
         positions_neg_exon = sequence[range].enum_for(:scan, /aagaag/).map { Regexp.last_match.begin(0) }
 
         positions_neg_exon.each do |pos|
-            feat = Bio::Feature.new('myrepeat', Range.new(range.begin()+pos+1, range.begin()+pos+6).to_s)
+            feat = Bio::Feature.new('myrepeat', Range.new(range.begin()+pos+chr_start, range.begin()+pos+chr_start+5).to_s)
             feat.append(Bio::Feature::Qualifier.new('repeat_motif', 'CTTCTT'))
             feat.append(Bio::Feature::Qualifier.new('strand', '-'))
             bioseq.features << feat

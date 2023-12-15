@@ -1,5 +1,9 @@
 require 'bio'
 
+puts "Making databases, BLAST is required for this..."
+system("makeblastdb -in Sequence_files/pombe_aa.fa -dbtype 'prot' -out Sequence_files/pombe_aa")
+system("makeblastdb -in Sequence_files/thali_na.fa -dbtype 'nucl' -out Sequence_files/thali_na")
+
 start = Time.now
 # Creating BLAST factories:
 puts "Creating BLAST factories..."

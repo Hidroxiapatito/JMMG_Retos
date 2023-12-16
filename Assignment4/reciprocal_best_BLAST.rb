@@ -1,4 +1,5 @@
 require 'bio'
+$stdout.reopen("stdoutput.txt", "a")
 
 puts "Making databases, BLAST is required for this..."
 system("makeblastdb -in Sequence_files/pombe_aa.fa -dbtype 'prot' -out Sequence_files/pombe_aa")
@@ -10,6 +11,7 @@ puts "Creating BLAST factories..."
 factory_pombe_aa = Bio::Blast.local('blastx' , 'Sequence_files/pombe_aa', '-b5 -e 0.05' ' -F "m S"' '-s T') 
 factory_thali_na = Bio::Blast.local('tblastn', 'Sequence_files/thali_na', '-b5 -e 0.05' ' -F "m S"' '-s T') 
 # Getting first hit sorted by e-value if this is < 0.05 with soft filtering and a Smith–Waterman alignment.
+# https://manpages.org/blastall
 # https://doi.org/10.1093/bioinformatics/btm585
 factories = Time.now
 puts "Time elapsed: #{factories - start} seconds"
@@ -21,7 +23,7 @@ n = 0
 x = 0
 pombe_fasta.each_entry do |pombe_fasta_entry|
     n += 1
-    puts "Protein: #{n}/total"
+    puts "Protein: #{n}/5146" # value known after running
 
     # Quering A.thaliana local proteome for BLAST best hit:
     first_hit_thali = factory_thali_na.query(pombe_fasta_entry.seq.to_s).hits.first
@@ -29,11 +31,12 @@ pombe_fasta.each_entry do |pombe_fasta_entry|
 
     x += 1
     # Appending best hit to results file if it's e-value < 0.05
-    File.open("./results.table2", 'a') { |file| file.puts("#{first_hit_thali.definition.split("|")[0].strip}\t#{pombe_fasta_entry.entry_id}") }
+    File.open("./results.table", 'a') { |file| file.puts("#{first_hit_thali.definition.split("|")[0].strip}\t#{pombe_fasta_entry.entry_id}") }
 
-    puts "#{x}/total logged proteins"
+    puts "Protein: #{x}/3525 logged" # value known after running
 end
-puts "Logged best hit of #{n} proteins with e-value < 0.05"
+puts "Logged best hit of #{x} proteins with e-value < 0.05 from total of #{n} proteins in S.pombe local database"
+
 pombe_proteins = Time.now
 puts "Time elapsed: #{(pombe_proteins - start)/60} minutes"
 
@@ -51,7 +54,9 @@ rec_start = Time.now
 new_file_lines = "" # storing reciprocal hits to write later 
 #source: https://stackoverflow.com/questions/17638621/deleting-a-specific-line-in-a-text-file)
 n = 0
-IO.readlines("./results.table2").each do |line|
+IO.readlines("./results.table").each do |line|
+    n += 1
+    puts "Protein: #{n}/3525"
 
     thali_entries_array.each do |thali_entry|
         if thali_entry.entry_id == line.split("\t")[0]
@@ -68,12 +73,10 @@ IO.readlines("./results.table2").each do |line|
             end
         end
     end
-    n += 1
-    puts "Protein: #{n}/total"
 end
 check_rec = Time.now
 puts "Time elapsed: #{(check_rec - rec_start)/60} minutes"
 puts "Total time elapsed: #{(check_rec - start)/60} minutes"
 
 # Overwriting results table with reciprocal hits and adding headers:
-File.open("./results.table2", 'w') { |file| file.puts("A.thaliana\tS.pombe\n#{new_file_lines}") }
+File.open("./results.table", 'w') { |file| file.puts("A.thaliana\tS.pombe\n#{new_file_lines}") }
